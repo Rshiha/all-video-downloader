@@ -64,7 +64,7 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
 
     outtmpl_pattern = os.path.join(DOWNLOAD_DIR, f"{job_id}.%(ext)s")
 
-    options: Dict[str, Any] = {
+        options: Dict[str, Any] = {
         "outtmpl": outtmpl_pattern,
         "progress_hooks": [hook],
         "quiet": True,
@@ -72,23 +72,26 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
         "ignoreerrors": True,
         "remote_components": ["ejs:github", "ejs:npm"],
         "format_sort": ["res", "fps", "vbr"],
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["android_vr", "web_safari", "web_embedded"]
-            }
+        # Universal User-Agent & Headers to bypass speed throttling on FB/IG/TikTok
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Sec-Fetch-Mode": "navigate",
         },
         # Resumable Download Strategy (Native yt-dlp resume & partial file protection)
         "continuedl": True,
         "part": True,
-        "retries": 10,
-        "fragment_retries": 10,
+        "retries": 15,
+        "fragment_retries": 15,
         "file_access_retries": 5,
-        # Performance & Network Optimization (Parallel fragments, chunked I/O)
-        "concurrent_fragment_downloads": 3,
-        "http_chunk_size": 10485760,
-        "buffersize": 1024 * 64,
-        "socket_timeout": 30,
+        # Performance & Network Optimization (Increased parallel fragments for better speed)
+        "concurrent_fragment_downloads": 6,
+        "http_chunk_size": 20971520,  # 20MB chunks for higher throughput
+        "buffersize": 1024 * 128,
+        "socket_timeout": 60,
     }
+
 
     # Ultimate Solution 1: Google OAuth2 Device Token Authentication (no cookies needed)
     if os.environ.get("ENABLE_OAUTH2", "").lower() in ("true", "1", "yes"):
