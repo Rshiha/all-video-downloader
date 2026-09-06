@@ -84,7 +84,7 @@ def download():
             prepared = ydl.prepare_filename(info)
         candidates = []
         for root, _, files in os.walk(workdir):
-            for f in file
+            for f in file:
                 candidates.append(os.path.join(root, f))
         if not candidates:
             raise RuntimeError("Download file তৈরি হয়নি।")
