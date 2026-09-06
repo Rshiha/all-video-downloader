@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: all-video-downloader
+    runtime: docker
+    plan: free
+    autoDeploy: true
