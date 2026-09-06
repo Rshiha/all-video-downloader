@@ -64,7 +64,7 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
 
     outtmpl_pattern = os.path.join(DOWNLOAD_DIR, f"{job_id}.%(ext)s")
 
-        options: Dict[str, Any] = {
+    options: Dict[str, Any] = {
         "outtmpl": outtmpl_pattern,
         "progress_hooks": [hook],
         "quiet": True,
@@ -92,7 +92,6 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
         "socket_timeout": 60,
     }
 
-
     # Ultimate Solution 1: Google OAuth2 Device Token Authentication (no cookies needed)
     if os.environ.get("ENABLE_OAUTH2", "").lower() in ("true", "1", "yes"):
         options["username"] = "oauth2"
@@ -101,7 +100,7 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
     # Ultimate Solution 2: Proof-of-Origin (PO) Token Support
     po_token = os.environ.get("PO_TOKEN")
     if po_token:
-        options["extractor_args"]["youtube"]["po_token"] = [f"web+{po_token}"]
+        options["extractor_args"] = {"youtube": {"po_token": [f"web+{po_token}"]}}
 
     import shutil
     try:
@@ -177,7 +176,9 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
     for clients in client_attempts:
         attempt_options = dict(options)
         if clients:
-            attempt_options["extractor_args"] = {"youtube": {"player_client": clients}}
+            if "extractor_args" not in attempt_options:
+                attempt_options["extractor_args"] = {}
+            attempt_options["extractor_args"]["youtube"] = {"player_client": clients}
 
         try:
             with YoutubeDL(attempt_options) as ydl:
@@ -185,7 +186,7 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
                 if not info:
                     continue
                 filename = ydl.prepare_filename(info)
-                
+
                 if format_choice == "mp3":
                     base, _ = os.path.splitext(filename)
                     filename = base + ".mp3"
@@ -214,3 +215,4 @@ def run_download(job_id: str, url: str, format_choice: str, quality: str, bitrat
 
     job.status = "error"
     job.error = friendly_error(str(last_error), job_id)
+
