@@ -75,15 +75,16 @@ def download():
         "quiet": True,
         "no_warnings": True,
         "restrictfilenames": True,
-        "max_filesize": 1024 * 1024 * 1024,
-    }
+           "max_filesize": 1024 * 1024 * 1024,
+        "cookiefile": "m.youtube.com_cookies.txt",
+ }
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
             info = ydl.extract_info(url, download=True)
             prepared = ydl.prepare_filename(info)
         candidates = []
         for root, _, files in os.walk(workdir):
-            for f in files:
+            for f in file
                 candidates.append(os.path.join(root, f))
         if not candidates:
             raise RuntimeError("Download file তৈরি হয়নি।")
