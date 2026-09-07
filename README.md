@@ -213,3 +213,4 @@ Distributed under the **MIT License**.
 > **Educational Purpose Only**: This tool is designed strictly for educational purposes. Please respect copyright laws and content creators' rights.
 
 Made with ❤️ by OMI-KALIX.
+# Render trigger fix
