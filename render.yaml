@@ -1,10 +1,6 @@
 services:
   - type: web
-    name: media-service
-    env: docker
+    name: all-video-downloader
+    runtime: docker
     plan: free
-    dockerfilePath: ./Dockerfile
-    envVars:
-      - key: PORT
-        value: 8000
-    healthCheckPath: /healthz
+    autoDeploy: true
